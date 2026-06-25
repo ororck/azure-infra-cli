@@ -36,6 +36,7 @@ jobs:
             --resource-group ${{ vars.RESOURCE_GROUP }} \
             --plan "plan-appservice-${{ vars.PRENOM }}" \
             --runtime "PHP:8.2"
+            --os-type linux
 
           cd appservice
           az webapp up \
