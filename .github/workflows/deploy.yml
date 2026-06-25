@@ -35,7 +35,7 @@ jobs:
             --name "api-appservice-${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
             --plan "plan-appservice-${{ vars.PRENOM }}" \
-            --runtime "PHP:8.2"
+            --runtime "PHP:8.2" \
             --os-type linux
 
           cd appservice
