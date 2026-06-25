@@ -28,6 +28,7 @@ jobs:
           az appservice plan create \
             --name "plan-appservice-${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --location westeurope \
             --sku B1 \
             --is-linux || true
 
@@ -50,8 +51,8 @@ jobs:
           az storage account create \
             --name "stfunc${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
-            --location francecentral \
-            --sku Standard_LRS
+            --location westeurope \
+            --sku Standard_LRS || true
 
           az functionapp create \
             --name "api-func-${{ vars.PRENOM }}" \
@@ -61,7 +62,7 @@ jobs:
             --runtime python \
             --runtime-version 3.11 \
             --functions-version 4 \
-            --os-type linux
+            --os-type linux || true
 
       - name: Deploy Container Instance
         run: |
@@ -73,4 +74,4 @@ jobs:
             --cpu 1 \
             --memory 1.5 \
             --dns-name-label "api-aci-${{ vars.PRENOM }}" \
-            --ports 80
+            --ports 80 || true
