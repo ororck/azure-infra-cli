@@ -28,7 +28,7 @@ jobs:
           az appservice plan create \
             --name "plan-appservice-${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
-            --sku FREE \
+            --sku B1 \
             --is-linux || true
 
           az webapp create \
