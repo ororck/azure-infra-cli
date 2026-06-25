@@ -37,11 +37,13 @@ jobs:
             --plan "plan-appservice-${{ vars.PRENOM }}" \
             --runtime "php|8.2"
 
-          cd appservice
-          az webapp up \
+          zip -j app.zip appservice/index.php
+
+          az webapp deploy \
             --name "api-appservice-${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
-            --runtime "PHP:8.2"
+            --src-path app.zip \
+            --type zip
 
       - name: Deploy Azure Functions
         run: |
