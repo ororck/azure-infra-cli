@@ -1,15 +1,3 @@
-┌─────────────────────────────────────────┐
-│            azure-infra-cli              │
-│                                         │
-│   push → main                           │
-│       └── GitHub Actions                │
-│               ├── 🌐 App Service        │
-│               ├── ⚡ Azure Functions    │
-│               └── 🐳 ACI               │
-└─────────────────────────────────────────┘
-
-
-
 # azure-infra-cli
 
 Déploiement automatisé de 3 services Azure via GitHub Actions.
