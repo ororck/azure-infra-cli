@@ -29,13 +29,13 @@ jobs:
             --name "plan-appservice-${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
             --sku FREE \
-            --is-linux
+            --is-linux || true
 
           az webapp create \
             --name "api-appservice-${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
             --plan "plan-appservice-${{ vars.PRENOM }}" \
-            --runtime "php|8.2"
+            --runtime "php|8.2" || true
 
           zip -j app.zip appservice/index.php
 
@@ -57,7 +57,7 @@ jobs:
             --name "api-func-${{ vars.PRENOM }}" \
             --resource-group ${{ vars.RESOURCE_GROUP }} \
             --storage-account "stfunc${{ vars.PRENOM }}" \
-            --consumption-plan-location francecentral \
+            --consumption-plan-location westeurope \
             --runtime python \
             --runtime-version 3.11 \
             --functions-version 4 \
