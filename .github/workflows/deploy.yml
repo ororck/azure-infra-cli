@@ -1,0 +1,70 @@
+name: Deploy Azure Infra
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy App Service
+        run: |
+          az appservice plan create \
+            --name "plan-appservice-${{ vars.PRENOM }}" \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --sku FREE \
+            --is-linux
+
+          az webapp create \
+            --name "api-appservice-${{ vars.PRENOM }}" \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --plan "plan-appservice-${{ vars.PRENOM }}" \
+            --runtime "PHP:8.2"
+
+          az webapp up \
+            --name "api-appservice-${{ vars.PRENOM }}" \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --html
+
+      - name: Deploy Azure Functions
+        run: |
+          az storage account create \
+            --name "stfunc${{ vars.PRENOM }}" \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --location francecentral \
+            --sku Standard_LRS
+
+          az functionapp create \
+            --name "api-func-${{ vars.PRENOM }}" \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --storage-account "stfunc${{ vars.PRENOM }}" \
+            --consumption-plan-location francecentral \
+            --runtime python \
+            --runtime-version 3.11 \
+            --functions-version 4 \
+            --os-type linux
+
+      - name: Deploy Container Instance
+        run: |
+          az container create \
+            --name "api-aci-${{ vars.PRENOM }}" \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --image mcr.microsoft.com/azuredocs/aci-helloworld \
+            --os-type Linux \
+            --cpu 1 \
+            --memory 1.5 \
+            --dns-name-label "api-aci-${{ vars.PRENOM }}" \
+            --ports 80
